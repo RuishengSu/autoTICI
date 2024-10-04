@@ -1,0 +1,8 @@
+name: autoTICI
+channels:
+  - defaults
+dependencies:
+  - torchvision
+  - torchaudio
+  - pytorch
+  - cudatoolkit=11.6
