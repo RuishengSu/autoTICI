@@ -244,25 +244,15 @@ def pad_sequence(seq, to=1024):
     return np.stack(out, axis=0)
 
 
-def resize_to_target_spacing(seq, pixel_spacing, target_spacing=None, masks=None):
+def resize_to_target_spacing(seq, pixel_spacing, target_spacing=None):
     if target_spacing != abs(pixel_spacing):
         seq_new_size = int(1024 * abs(pixel_spacing) / target_spacing)
         seq = resize(seq, (seq.shape[0], seq_new_size, seq_new_size), anti_aliasing=False, preserve_range=True)
         seq = np.array(seq, dtype=np.uint8)
-        if masks is not None:
-            for i, mask in enumerate(masks):
-                masks[i] = resize(mask, (seq_new_size, seq_new_size), anti_aliasing=False, preserve_range=True)
         if seq.shape[1] < 1024:
             seq = pad_sequence(seq, to=1024)
-            if masks is not None:
-                for i, mask in enumerate(masks):
-                    masks[i] = pad_image(mask, to=1024, cval=0)
-
-        if seq.shape[1] > 1024:
+        elif seq.shape[1] > 1024:
             crop_size = (seq.shape[1] - 1024) // 2
             seq = seq[:, crop_size:crop_size + 1024, crop_size:crop_size + 1024]
-            if masks is not None:
-                for i, mask in enumerate(masks):
-                    masks[i] = mask[crop_size:crop_size + 1024, crop_size:crop_size + 1024]
         pixel_spacing = target_spacing
     return seq, pixel_spacing
