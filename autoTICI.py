@@ -52,7 +52,6 @@ class AutoTICI:
         preEVT_seq, preEVT_pixel_spacing = resize_to_1024(preEVT_seq, preEVT_pixel_spacing)
         postEVT_seq, postEVT_pixel_spacing = resize_to_1024(postEVT_seq, postEVT_pixel_spacing)
         if not (np.isnan(preEVT_pixel_spacing) or np.isnan(postEVT_pixel_spacing)):
-            postEVT_seq, postEVT_pixel_spacing = resize_to_target_spacing(postEVT_seq, postEVT_pixel_spacing)
             preEVT_seq, preEVT_pixel_spacing = resize_to_target_spacing(preEVT_seq, preEVT_pixel_spacing,
                                                                         target_spacing=postEVT_pixel_spacing)
         logger.info("preEVT spacing: {}, postEVT spacing: {}".format(preEVT_pixel_spacing, postEVT_pixel_spacing))

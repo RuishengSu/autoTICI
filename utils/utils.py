@@ -245,8 +245,6 @@ def pad_sequence(seq, to=1024):
 
 
 def resize_to_target_spacing(seq, pixel_spacing, target_spacing=None, masks=None):
-    if target_spacing is None:
-        target_spacing = (0.15, abs(pixel_spacing))[0.14 <= abs(pixel_spacing) <= 0.16]
     if target_spacing != abs(pixel_spacing):
         seq_new_size = int(1024 * abs(pixel_spacing) / target_spacing)
         seq = resize(seq, (seq.shape[0], seq_new_size, seq_new_size), anti_aliasing=False, preserve_range=True)
