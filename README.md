@@ -1,14 +1,5 @@
 # autoTICI
 
----
-license: other
-license_name: non-commercial-mit
-license_link: LICENSE
----
-
-
-### autoTICI
-
 #### Steps to run autoTICI
 1. Create a conda environment\
     `conda env create -n new_env_name -f environment.yml`
