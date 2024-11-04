@@ -10,7 +10,7 @@ from torchvision.transforms import transforms
 from huggingface_hub import hf_hub_download
 from itertools import combinations_with_replacement
 
-from phase_classification import models
+from autotici.phase_classification import models
 
 logger = logging.getLogger(__name__)
 

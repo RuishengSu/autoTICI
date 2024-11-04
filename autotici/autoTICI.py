@@ -2,13 +2,13 @@ import os
 import sys
 import argparse
 from scipy.spatial import distance
-from registration.prepost_registration import register_to_postEVT
-from registration.transformation import warp_sequence
-from registration.motion_correction import mc_sequence
-from phase_classification.phase_predict import DSAPhaseClassifier
-from landmark_detection import LandmarkDetector
-from region_segmention import RegionSegmentor
-from utils.utils import *
+from autotici.registration.prepost_registration import register_to_postEVT
+from autotici.registration.transformation import warp_sequence
+from autotici.registration.motion_correction import mc_sequence
+from autotici.phase_classification.phase_predict import DSAPhaseClassifier
+from autotici.landmark_detection import LandmarkDetector
+from autotici.region_segmention import RegionSegmentor
+from autotici.utils.utils import *
 
 logger = logging.getLogger(__name__)
 

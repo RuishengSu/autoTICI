@@ -8,7 +8,7 @@ from scipy.stats import mode
 from skimage.morphology import binary_dilation, disk, remove_small_objects, binary_closing, remove_small_holes
 from skimage.transform import resize
 from skimage.filters import frangi
-import config
+import autotici.config
 logger = logging.getLogger(__name__)
 
 
