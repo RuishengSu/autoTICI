@@ -8,7 +8,7 @@ from scipy.stats import mode
 from skimage.morphology import binary_dilation, disk, remove_small_objects, binary_closing, remove_small_holes
 from skimage.transform import resize
 from skimage.filters import frangi
-import autotici.config
+import autotici.config as config
 logger = logging.getLogger(__name__)
 
 
@@ -195,11 +195,23 @@ def truncate(img, img_min=0, img_max=255):
     return img
 
 
-def perfusion_segmentation(img, background=255):
-    img_vessel = frangi(img.astype(float), sigmas=(2, 12, 2))
-    img_vessel = img_vessel * 255
-    img_vessel = truncate(img_vessel, img_min=0, img_max=255)
-    _, img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=config.FRONGI_INTENSITY_THRES)
+def perfusion_segmentation(img, background=255, vessel_mask=None):
+    """
+    Perform segmentation in a DSA using Otsu thresholding and vessel masking.
+    :param img: the DSA image to be segmented
+    :param background: the level of the background pixels, defaults to 255
+    :param vessel_mask: a mask of the vessels on the minip. If this is not provided, a Frangi filter is used
+    :return: the vessel_mask, perfusion map and histogram data in a tuple
+    """
+    if vessel_mask is None:
+        img_vessel = frangi(img.astype(float), sigmas=(2, 12, 2))
+        img_vessel = img_vessel * 255
+        img_vessel = truncate(img_vessel, img_min=0, img_max=255)
+        _, img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=config.FRONGI_INTENSITY_THRES)
+    else:
+        # In the case of a provided mask we binarize based on half the range in the mask
+        img_vessel = vessel_mask
+        img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=vessel_mask.max()*.5)
     # a boolean array of (width, height) in which False is invalid pixels (vessel) and True is valid pixels (non-vessel)
     vessel_mask = (img_vessel_binary == 255) & (img >= config.MIN_VESSEL_INTENSITY)
 

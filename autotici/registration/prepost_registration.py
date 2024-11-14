@@ -5,7 +5,7 @@ import ants
 import cv2 as cv
 import numpy as np
 
-import registration.transformation
+import autotici.registration.transformation
 from autotici.utils.utils import normalize, extract_skull_mask
 
 
