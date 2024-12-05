@@ -177,7 +177,7 @@ def segment_minip(preEVT_sequence, postEVT_sequence, TDT_mask):
 
 
 def binarize_image(img, thresh=0):
-    # Otsu's thresholding after Gaussian filtering. Inpput image must by of dtype: uint8
+    # Otsu's thresholding after Gaussian filtering. Input image must by of dtype: uint8 and must be 2D
     if thresh != 0:
         return cv.threshold(img, thresh, 255, cv.THRESH_BINARY)
     else:
@@ -210,8 +210,8 @@ def perfusion_segmentation(img, background=255, vessel_mask=None):
         _, img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=config.FRONGI_INTENSITY_THRES)
     else:
         # In the case of a provided mask we binarize based on half the range in the mask
-        img_vessel = vessel_mask
-        img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=vessel_mask.max()*.5)
+        img_vessel = vessel_mask*255
+        _, img_vessel_binary = binarize_image(img_vessel.squeeze().astype(np.uint8), thresh=img_vessel.max()*.5)
     # a boolean array of (width, height) in which False is invalid pixels (vessel) and True is valid pixels (non-vessel)
     vessel_mask = (img_vessel_binary == 255) & (img >= config.MIN_VESSEL_INTENSITY)
 
