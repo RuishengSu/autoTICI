@@ -203,17 +203,7 @@ def perfusion_segmentation(img, background=255, vessel_mask=None):
     :param vessel_mask: a mask of the vessels on the minip. If this is not provided, a Frangi filter is used
     :return: the vessel_mask, perfusion map and histogram data in a tuple
     """
-    if vessel_mask is None:
-        img_vessel = frangi(img.astype(float), sigmas=(2, 12, 2))
-        img_vessel = img_vessel * 255
-        img_vessel = truncate(img_vessel, img_min=0, img_max=255)
-        _, img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=config.FRONGI_INTENSITY_THRES)
-    else:
-        # In the case of a provided mask we binarize based on half the range in the mask
-        img_vessel = vessel_mask*255
-        _, img_vessel_binary = binarize_image(img_vessel.squeeze().astype(np.uint8), thresh=img_vessel.max()*.5)
-    # a boolean array of (width, height) in which False is invalid pixels (vessel) and True is valid pixels (non-vessel)
-    vessel_mask = (img_vessel_binary == 255) & (img >= config.MIN_VESSEL_INTENSITY)
+    vessel_mask = vessel_masking(img, vessel_mask)
 
     '''Get all non-vessel pixel values'''
     '''Temporary workaround for the transformation artifacts on the image edge area'''
@@ -237,6 +227,21 @@ def perfusion_segmentation(img, background=255, vessel_mask=None):
 
     hist_data = data
     return vessel_mask, perfusion_map, hist_data
+
+
+def vessel_masking(img, vessel_mask):
+    if vessel_mask is None:
+        img_vessel = frangi(img.astype(float), sigmas=(2, 12, 2))
+        img_vessel = img_vessel * 255
+        img_vessel = truncate(img_vessel, img_min=0, img_max=255)
+        _, img_vessel_binary = binarize_image(img_vessel.astype(np.uint8), thresh=config.FRONGI_INTENSITY_THRES)
+    else:
+        # In the case of a provided mask we binarize based on half the range in the mask
+        img_vessel = vessel_mask * 255
+        _, img_vessel_binary = binarize_image(img_vessel.squeeze().astype(np.uint8), thresh=img_vessel.max() * .5)
+    # a boolean array of (width, height) in which False is invalid pixels (vessel) and True is valid pixels (non-vessel)
+    vessel_mask = (img_vessel_binary == 255) & (img >= config.MIN_VESSEL_INTENSITY)
+    return vessel_mask
 
 
 def pad_image(img, to=1024, cval=None):
